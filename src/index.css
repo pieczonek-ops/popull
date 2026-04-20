@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+@import "react-quill-new/dist/quill.snow.css";
+
+@theme {
+  --font-headline: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-surface-variant: var(--on-surface-variant);
+}
+
+@layer base {
+  :root {
+    --surface: #fdfcff;
+    --on-surface: #1a1c1e;
+    --surface-container: #f0f0f3;
+    --surface-container-low: #f8f9fc;
+    --surface-container-lowest: #ffffff;
+    --primary: #0061a4;
+    --on-primary: #ffffff;
+    --primary-container: #d1e4ff;
+    --on-surface-variant: #43474e;
+  }
+
+  :root.dark {
+    --surface: #111416;
+    --on-surface: #e1e2e6;
+    --surface-container: #1d2023;
+    --surface-container-low: #191c1f;
+    --surface-container-lowest: #0b0f11;
+    --primary: #c0c1ff;
+    --on-primary: #1f2182;
+    --primary-container: #040071;
+    --on-surface-variant: #c7c5d4;
+  }
+
+  body {
+    @apply bg-surface text-on-surface font-body transition-colors duration-300;
+  }
+}
+
+/* Quill Dark Mode Overrides */
+.ql-toolbar.ql-snow {
+  @apply border-white/10 bg-surface-container-low rounded-t-xl;
+}
+.ql-container.ql-snow {
+  @apply border-white/10 bg-surface-container-low rounded-b-xl text-on-surface font-body;
+}
+.ql-editor {
+  @apply min-h-[300px];
+}
+.ql-snow .ql-stroke {
+  stroke: #e1e2e6 !important;
+}
+.ql-snow .ql-fill {
+  fill: #e1e2e6 !important;
+}
+.ql-snow .ql-picker {
+  color: #e1e2e6 !important;
+}
+
+.glass-header {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

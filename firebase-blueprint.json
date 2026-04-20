@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Article": {
+      "title": "Article",
+      "description": "A news article in the system",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the article" },
+        "description": { "type": "string", "description": "A short summary of the article" },
+        "content": { "type": "string", "description": "The full HTML content of the article" },
+        "category": { "type": "string", "description": "Category like 'Technologia', 'Rozrywka', etc." },
+        "imageUrl": { "type": "string", "description": "URL to the main image" },
+        "timestamp": { "type": "string", "description": "ISO string of when it was published" },
+        "readTime": { "type": "string", "description": "Estimated read time" },
+        "isBreaking": { "type": "boolean", "description": "Whether it's a breaking news item" },
+        "authorId": { "type": "string", "description": "UID of the creator" }
+      },
+      "required": ["title", "content", "category", "imageUrl", "timestamp"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user profile",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["email", "role"]
+    },
+    "HomeConfig": {
+      "title": "HomeConfig",
+      "description": "Configuration for the home page sections",
+      "type": "object",
+      "properties": {
+        "hero": {
+          "type": "object",
+          "properties": {
+            "articleId": { "type": "string" },
+            "backgroundColor": { "type": "string" },
+            "textColor": { "type": "string" },
+            "buttonType": { "type": "string", "enum": ["solid", "outline", "gradient"] },
+            "buttonColor": { "type": "string" },
+            "buttonIcon": { "type": "string" },
+            "showCard": { "type": "boolean" }
+          }
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "category": { "type": "string" },
+              "count": { "type": "number" },
+              "layout": { "type": "string", "enum": ["grid", "horizontal", "small"] },
+              "backgroundColor": { "type": "string" },
+              "backgroundImageUrl": { "type": "string" },
+              "titleColor": { "type": "string" },
+              "linkColor": { "type": "string" },
+              "showSeeMore": { "type": "boolean" },
+              "seeMoreText": { "type": "string" },
+              "seeMoreColor": { "type": "string" },
+              "showDescription": { "type": "boolean" },
+              "showDate": { "type": "boolean" },
+              "showCategory": { "type": "boolean" },
+              "showReadTime": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+    "Comment": {
+      "title": "Comment",
+      "description": "A comment or reply on an article",
+      "type": "object",
+      "properties": {
+        "articleId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "parentId": { "type": "string", "description": "ID of the parent comment if this is a reply" },
+        "replyToName": { "type": "string", "description": "Name of the person being replied to" }
+      },
+      "required": ["articleId", "userId", "userName", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/articles/{articleId}": {
+      "schema": "Article",
+      "description": "Collection of all news articles"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles"
+    },
+    "/config/home": {
+      "schema": "HomeConfig",
+      "description": "Home page layout configuration"
+    },
+    "/articles/{articleId}/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Comments nested under each article"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: articles
+    // Fields: title, description, content, category, imageUrl, timestamp, readTime, isBreaking, authorId
+    
+    // Collection: config/home
+    // Fields: hero, sections (nested arrays and objects)
+
+    // Collection: articles/{articleId}/comments
+    // Fields: articleId, userId, userName, userPhoto, content, timestamp, parentId, replyToName
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "pieczonek@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidArticle(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.content is string && data.content.size() < 50000 &&
+             data.category is string &&
+             data.imageUrl is string &&
+             data.timestamp is string;
+    }
+
+    function isValidComment(data) {
+      return data.articleId is string &&
+             data.userId == request.auth.uid &&
+             data.userName is string && data.userName.size() > 0 && data.userName.size() < 100 &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 2000 &&
+             data.timestamp is timestamp &&
+             (!('parentId' in data) || data.parentId is string) &&
+             (!('replyToName' in data) || data.replyToName is string);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /articles/{articleId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidArticle(request.resource.data);
+      allow update: if isAdmin() && isValidArticle(request.resource.data);
+      allow delete: if isAdmin();
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isAuthenticated() && isValidComment(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == resource.data.userId && isValidComment(request.resource.data);
+        allow delete: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      }
+    }
+
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
