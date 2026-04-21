@@ -2,6 +2,7 @@ export interface ArticleSubSection {
   id: string;
   title: string;
   imageUrl: string;
+  imageSource?: string;
   content: string;
 }
 
@@ -15,6 +16,7 @@ export interface NewsArticle {
   timestamp: string;
   readTime: string;
   isBreaking?: boolean;
+  imageSource?: string;
   subSections?: ArticleSubSection[];
   displayMode?: 'single' | 'multi';
 }

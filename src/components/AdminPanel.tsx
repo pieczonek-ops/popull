@@ -1,6 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import ReactQuill from 'react-quill-new';
+import ReactQuill, { Quill } from 'react-quill-new';
 import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, setDoc, getDoc } from 'firebase/firestore';
+
+// Register custom HTML blot to allow iframes/embeds
+const BlockEmbed = Quill.import('blots/block/embed') as any;
+class HtmlBlot extends BlockEmbed {
+  static create(value: string) {
+    const node = super.create();
+    node.innerHTML = value;
+    node.setAttribute('contenteditable', 'false');
+    return node;
+  }
+
+  static value(node: HTMLElement) {
+    return node.innerHTML;
+  }
+}
+HtmlBlot.blotName = 'html-embed';
+HtmlBlot.tagName = 'div';
+HtmlBlot.className = 'ql-html-embed';
+Quill.register(HtmlBlot);
 import { db } from '../firebase';
 import { NewsArticle, HomeConfig, HomeSection, CommentsConfig, ArticleSubSection } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -68,6 +87,35 @@ export default function AdminPanel() {
       </div>
     );
   }
+
+  const quillModules = {
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image', 'video'],
+        ['embed'],
+        ['clean']
+      ],
+      handlers: {
+        embed: function(this: any) {
+          const value = prompt('Wklej kod embed (np. <iframe ...> z Facebooka, X.com lub YouTube):');
+          if (value) {
+            const range = this.quill.getSelection();
+            this.quill.insertEmbed(range?.index || 0, 'html-embed', value, 'user');
+          }
+        }
+      }
+    },
+  };
+
+  const quillFormats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet',
+    'link', 'image', 'video', 'html-embed'
+  ];
 
   const handleSaveArticle = async () => {
     if (!currentArticle?.title || !currentArticle?.content) return;
@@ -763,13 +811,24 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">URL Obrazu</label>
-                  <input 
-                    className="w-full bg-surface-container-low border border-white/10 rounded-xl py-3 px-4 outline-none focus:ring-1 focus:ring-primary"
-                    value={currentArticle?.imageUrl || ''}
-                    onChange={e => setCurrentArticle({...currentArticle, imageUrl: e.target.value})}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">URL Obrazu</label>
+                    <input 
+                      className="w-full bg-surface-container-low border border-white/10 rounded-xl py-3 px-4 outline-none focus:ring-1 focus:ring-primary"
+                      value={currentArticle?.imageUrl || ''}
+                      onChange={e => setCurrentArticle({...currentArticle, imageUrl: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Źródło obrazu (Opcjonalne)</label>
+                    <input 
+                      className="w-full bg-surface-container-low border border-white/10 rounded-xl py-3 px-4 outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="Np. fot. Jan Kowalski / materiały prasowe"
+                      value={currentArticle?.imageSource || ''}
+                      onChange={e => setCurrentArticle({...currentArticle, imageSource: e.target.value})}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -787,6 +846,8 @@ export default function AdminPanel() {
                     theme="snow" 
                     value={currentArticle?.content || ''} 
                     onChange={content => setCurrentArticle({...currentArticle, content})}
+                    modules={quillModules}
+                    formats={quillFormats}
                   />
                 </div>
 
@@ -848,7 +909,7 @@ export default function AdminPanel() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="space-y-2">
                             <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Tytuł Sekcji</label>
                             <input 
@@ -867,6 +928,15 @@ export default function AdminPanel() {
                               onChange={e => updateSubSection(sub.id, 'imageUrl', e.target.value)}
                             />
                           </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Źródło Obrazu Sekcji</label>
+                            <input 
+                              placeholder="Źródło (opcjonalnie)"
+                              className="w-full bg-surface-container-low border border-white/10 rounded-xl py-2 px-4 text-sm outline-none focus:ring-1 focus:ring-primary"
+                              value={sub.imageSource || ''}
+                              onChange={e => updateSubSection(sub.id, 'imageSource', e.target.value)}
+                            />
+                          </div>
                         </div>
 
                         <div className="space-y-2">
@@ -876,6 +946,8 @@ export default function AdminPanel() {
                             className="bg-surface-container-low"
                             value={sub.content} 
                             onChange={v => updateSubSection(sub.id, 'content', v)}
+                            modules={quillModules}
+                            formats={quillFormats}
                           />
                         </div>
                       </div>

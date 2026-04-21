@@ -67,6 +67,34 @@
   color: #e1e2e6 !important;
 }
 
+/* Custom Embed Button Icon */
+.ql-snow.ql-toolbar button.ql-embed::before {
+  content: "EM";
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid currentColor;
+  padding: 1px 3px;
+  border-radius: 4px;
+}
+
+/* Responsive Embeds */
+.ql-html-embed {
+  @apply my-8 rounded-2xl overflow-hidden flex justify-center bg-black/5;
+}
+
+.ql-html-embed iframe,
+.prose iframe {
+  max-width: 100% !important;
+  border: none !important;
+  border-radius: 1rem;
+}
+
+.ql-html-embed blockquote.twitter-tweet,
+.ql-html-embed blockquote.fb-xfbml-parse-ignore {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 .glass-header {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);

@@ -26,10 +26,42 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
   const totalSteps = 1 + (article.subSections?.length || 0);
   const isMultiPage = article.displayMode === 'multi' && totalSteps > 1;
 
-  // Reset page when article changes
+  // Reset page when article changes and re-parse social widgets
   useEffect(() => {
     setActiveStep(0);
+    
+    // Re-parse social widgets after content render
+    const timer = setTimeout(() => {
+      // @ts-ignore
+      if (window.twttr?.widgets) {
+        // @ts-ignore
+        window.twttr.widgets.load();
+      }
+      // @ts-ignore
+      if (window.FB?.XFBML) {
+        // @ts-ignore
+        window.FB.XFBML.parse();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [article.id]);
+
+  // Re-parse when step changes (multi-page mode)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // @ts-ignore
+      if (window.twttr?.widgets) {
+        // @ts-ignore
+        window.twttr.widgets.load();
+      }
+      // @ts-ignore
+      if (window.FB?.XFBML) {
+        // @ts-ignore
+        window.FB.XFBML.parse();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [activeStep]);
 
   const handleShare = async () => {
     const shareData = {
@@ -124,17 +156,25 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
           )}
         </header>
 
-        <div className="aspect-[16/9] rounded-3xl overflow-hidden mb-12 bg-surface-container shadow-2xl relative group/img">
-          <img 
-            src={activeStep === 0 ? article.imageUrl : article.subSections![activeStep-1].imageUrl || article.imageUrl} 
-            alt={article.title} 
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          {activeStep > 0 && article.subSections![activeStep-1].title && (
-            <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
-              <p className="text-white font-bold text-lg">{article.subSections![activeStep-1].title}</p>
-            </div>
+        <div className="mb-12">
+          <div className="aspect-[16/9] rounded-3xl overflow-hidden bg-surface-container shadow-2xl relative group/img">
+            <img 
+              src={activeStep === 0 ? article.imageUrl : article.subSections![activeStep-1].imageUrl || article.imageUrl} 
+              alt={article.title} 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+            {activeStep > 0 && article.subSections![activeStep-1].title && (
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+                <p className="text-white font-bold text-lg">{article.subSections![activeStep-1].title}</p>
+              </div>
+            )}
+          </div>
+          {(activeStep === 0 ? article.imageSource : article.subSections![activeStep-1]?.imageSource) && (
+            <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2 opacity-60">
+              <span className="w-4 h-[1px] bg-on-surface-variant/30"></span>
+              {activeStep === 0 ? article.imageSource : article.subSections![activeStep-1].imageSource}
+            </p>
           )}
         </div>
 
@@ -171,8 +211,16 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                       <h2 className="text-2xl lg:text-3xl font-black uppercase tracking-tight">{sub.title}</h2>
                     </div>
                     {sub.imageUrl && (
-                      <div className="aspect-video rounded-2xl overflow-hidden bg-surface-container shadow-lg">
-                        <img src={sub.imageUrl} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <div className="space-y-3">
+                        <div className="aspect-video rounded-2xl overflow-hidden bg-surface-container shadow-lg">
+                          <img src={sub.imageUrl} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        </div>
+                        {sub.imageSource && (
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2 opacity-60">
+                            <span className="w-4 h-[1px] bg-on-surface-variant/30"></span>
+                            {sub.imageSource}
+                          </p>
+                        )}
                       </div>
                     )}
                     <div 
