@@ -19,6 +19,11 @@ export interface NewsArticle {
   imageSource?: string;
   subSections?: ArticleSubSection[];
   displayMode?: 'single' | 'multi';
+  translations?: Record<string, {
+    title: string;
+    description: string;
+    content: string;
+  }>;
 }
 
 export interface HomeSection {

@@ -14,9 +14,11 @@ export default function Sidebar() {
                   {item.rank}
                 </span>
                 <div>
-                  <h6 className="font-bold text-sm leading-tight group-hover:text-primary group-hover:underline transition-colors line-clamp-2">
-                    {item.title}
-                  </h6>
+                  <Link to={`/article/${item.id}`}>
+                    <h6 className="font-bold text-sm leading-tight group-hover:text-primary group-hover:underline transition-colors line-clamp-2">
+                      {item.title}
+                    </h6>
+                  </Link>
                   <Link to={`/category/${item.category}`} className="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest hover:text-primary transition-colors">
                     {item.category}
                   </Link>
