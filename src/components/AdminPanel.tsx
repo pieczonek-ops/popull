@@ -422,7 +422,7 @@ export default function AdminPanel() {
                   <input 
                     type="color"
                     className="w-full h-12 rounded-lg cursor-pointer bg-transparent border-none"
-                    value={homeConfig?.hero.buttonColor || '#0061a4'}
+                    value={homeConfig?.hero.buttonColor || '#cc0000'}
                     onChange={e => setHomeConfig(prev => prev ? {...prev, hero: {...prev.hero, buttonColor: e.target.value}} : null)}
                   />
                 </div>

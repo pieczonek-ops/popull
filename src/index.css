@@ -26,9 +26,9 @@
     --surface-container: #f1f5f9; /* Slate 100 */
     --surface-container-low: #f8fafc; /* Slate 50 */
     --surface-container-lowest: #ffffff;
-    --primary: #0891b2; /* Cyan 600 */
+    --primary: #cc0000;
     --on-primary: #ffffff;
-    --primary-container: #cffafe; /* Cyan 100 */
+    --primary-container: #ffe5e5;
     --on-surface-variant: #64748b; /* Slate 500 */
     --outline: #e2e8f0; /* Slate 200 */
   }
@@ -39,15 +39,19 @@
     --surface-container: #1e293b; /* Slate 800 */
     --surface-container-low: #0f172a; /* Slate 900 */
     --surface-container-lowest: #020617;
-    --primary: #22d3ee; /* Cyan 400 */
-    --on-primary: #083344; /* Cyan 950 */
-    --primary-container: #164e63; /* Cyan 900 */
+    --primary: #ff3333;
+    --on-primary: #ffffff;
+    --primary-container: #660000;
     --on-surface-variant: #94a3b8; /* Slate 400 */
     --outline: #334155; /* Slate 700 */
   }
 
   body {
     @apply bg-surface text-on-surface font-body transition-colors duration-300;
+  }
+
+  a:not(.no-underline) {
+    @apply underline decoration-1 underline-offset-4;
   }
 }
 
@@ -97,7 +101,7 @@
 }
 
 .prose a {
-  @apply text-primary font-bold hover:underline;
+  @apply text-primary font-bold underline decoration-2 underline-offset-4 hover:opacity-80 transition-opacity;
 }
 
 /* Video & Iframe Responsiveness in Article Content */

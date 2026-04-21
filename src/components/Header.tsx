@@ -11,12 +11,12 @@ export default function Header() {
     <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline">
       <div className="flex justify-between items-center px-6 py-4 w-full max-w-screen-2xl mx-auto">
         <div className="flex items-center gap-4 lg:gap-8">
-          <Link to="/" className="text-2xl font-black italic tracking-tighter text-primary uppercase">The Pulse</Link>
+          <Link to="/" className="text-2xl font-black italic tracking-tighter text-primary uppercase no-underline">The Pulse</Link>
           <nav className="hidden md:flex items-center gap-6">
-            <Link className="text-primary border-b-2 border-primary font-bold py-1" to="/">Trendujące</Link>
-            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg" to="/category/Rozrywka">Rozrywka</Link>
-            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg" to="/category/Technologia">Technologia</Link>
-            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg" to="/category/Świat">Świat</Link>
+            <Link className="text-primary border-b-2 border-primary font-bold py-1 no-underline" to="/">Trendujące</Link>
+            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg no-underline" to="/category/Rozrywka">Rozrywka</Link>
+            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg no-underline" to="/category/Technologia">Technologia</Link>
+            <Link className="text-on-surface-variant font-medium hover:text-on-surface transition-all duration-300 px-2 rounded-lg no-underline" to="/category/Świat">Świat</Link>
           </nav>
         </div>
         <div className="flex items-center gap-4 flex-1 max-w-md ml-4">
@@ -37,9 +37,9 @@ export default function Header() {
             {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </button>
 
-          <Link to="/admin" className="flex items-center gap-2 bg-surface-container hover:bg-surface-container-highest transition-all px-4 py-2 rounded-full border border-white/5">
+          <Link to="/admin" className="flex items-center gap-2 bg-surface-container hover:bg-surface-container-highest transition-all px-4 py-2 rounded-full border border-white/5 no-underline">
             <User className="w-4 h-4 text-primary" />
-            <span className="text-xs font-bold uppercase tracking-widest hidden lg:block">
+            <span className="text-xs font-bold uppercase tracking-widest hidden lg:block no-underline">
               {user ? 'Panel' : 'Zaloguj'}
             </span>
           </Link>
