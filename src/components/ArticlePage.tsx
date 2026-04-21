@@ -164,6 +164,9 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
               alt={article.title} 
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
             />
             {activeStep > 0 && article.subSections![activeStep-1].title && (
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
@@ -214,7 +217,14 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                     {sub.imageUrl && (
                       <div className="space-y-3">
                         <div className="aspect-video rounded-2xl overflow-hidden bg-surface-container shadow-lg">
-                          <img src={sub.imageUrl} alt={sub.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          <img 
+                            src={sub.imageUrl} 
+                            alt={sub.title} 
+                            className="w-full h-full object-cover" 
+                            referrerPolicy="no-referrer" 
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </div>
                         {sub.imageSource && (
                           <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2 opacity-60">
@@ -311,6 +321,8 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                         alt={item.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         referrerPolicy="no-referrer"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <h5 className="font-bold text-base leading-tight group-hover:text-primary group-hover:underline transition-colors line-clamp-2">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -6,15 +6,24 @@ import Sidebar from './components/Sidebar';
 import NewsCard from './components/NewsCard';
 import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
-import AdminPanel from './components/AdminPanel';
-import ArticlePage from './components/ArticlePage';
-import CategoryPage from './components/CategoryPage';
+
+// Lazy load heavy components
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const ArticlePage = lazy(() => import('./components/ArticlePage'));
+const CategoryPage = lazy(() => import('./components/CategoryPage'));
+
 import { AuthProvider } from './contexts/AuthContext';
 import { BREAKING_NEWS, ENTERTAINMENT_NEWS, TECH_NEWS, AMAZING_NEWS } from './constants';
 import { collection, query, orderBy, onSnapshot, doc } from 'firebase/firestore';
 import { db } from './firebase';
 import { NewsArticle, HomeConfig } from './types';
 import { LayoutDashboard } from 'lucide-react';
+
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-[50vh]">
+    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], homeConfig: HomeConfig | null }) {
   const heroArticle = homeConfig?.hero.articleId 
@@ -246,25 +255,26 @@ function MainContent() {
     };
   }, []);
 
+  if (loading) return null;
   const allArticles = [...articles];
 
-  if (loading) return null;
-
   return (
-    <Routes>
-      <Route path="/admin" element={<AdminPanel />} />
-      <Route path="*" element={
-        <PublicLayout>
-          <Routes>
-            <Route path="/" element={<HomeView allArticles={allArticles} homeConfig={homeConfig} />} />
-            <Route path="/article/:id/:slug" element={<ArticleView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
-            <Route path="/article/:id" element={<ArticleView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
-            <Route path="/category/:name" element={<CategoryView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
-            <Route path="*" element={<HomeView allArticles={allArticles} homeConfig={homeConfig} />} />
-          </Routes>
-        </PublicLayout>
-      } />
-    </Routes>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="*" element={
+          <PublicLayout>
+            <Routes>
+              <Route path="/" element={<HomeView allArticles={allArticles} homeConfig={homeConfig} />} />
+              <Route path="/article/:id/:slug" element={<ArticleView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
+              <Route path="/article/:id" element={<ArticleView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
+              <Route path="/category/:name" element={<CategoryView allArticles={allArticles} commentsConfig={homeConfig?.comments} />} />
+              <Route path="*" element={<HomeView allArticles={allArticles} homeConfig={homeConfig} />} />
+            </Routes>
+          </PublicLayout>
+        } />
+      </Routes>
+    </Suspense>
   );
 }
 

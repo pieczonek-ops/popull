@@ -48,6 +48,9 @@ export default function Hero({ article, config }: HeroProps) {
           src={article.imageUrl}
           alt={article.title}
           referrerPolicy="no-referrer"
+          fetchPriority="high"
+          loading="eager"
+          decoding="sync"
         />
         <div className="absolute bottom-0 left-0 p-6 lg:p-12 w-full lg:max-w-3xl">
           <div className="flex items-center gap-4 mb-4">

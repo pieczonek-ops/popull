@@ -48,6 +48,8 @@ export default function NewsCard({
             src={article.imageUrl} 
             alt={article.title}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-primary/90 text-on-primary flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform">
@@ -88,6 +90,8 @@ export default function NewsCard({
             src={article.imageUrl} 
             alt={article.title}
             referrerPolicy="no-referrer"
+            loading="lazy"
+            decoding="async"
           />
         </Link>
         <div className="flex-1 overflow-hidden">
@@ -135,6 +139,8 @@ export default function NewsCard({
               src={article.imageUrl} 
               alt={article.title}
               referrerPolicy="no-referrer"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <h5 
@@ -163,6 +169,8 @@ export default function NewsCard({
           src={article.imageUrl} 
           alt={article.title}
           referrerPolicy="no-referrer"
+          loading="lazy"
+          decoding="async"
         />
       </Link>
       {showCategory && (
