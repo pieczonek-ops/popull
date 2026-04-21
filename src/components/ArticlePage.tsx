@@ -151,7 +151,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
           </h1>
 
           {activeStep === 0 && (
-            <p className="text-lg text-on-surface-variant leading-relaxed font-medium break-words italic border-l-4 border-primary/20 pl-6">
+            <p className="text-lg md:text-xl text-on-surface leading-relaxed font-bold break-words mb-8">
               {article.description}
             </p>
           )}

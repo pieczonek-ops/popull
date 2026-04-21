@@ -100,6 +100,13 @@
   @apply text-primary font-bold hover:underline;
 }
 
+/* Video & Iframe Responsiveness in Article Content */
+.prose iframe,
+.prose video,
+.prose .ql-video {
+  @apply w-full aspect-video rounded-3xl my-10 shadow-2xl block border-none max-w-full h-auto;
+}
+
 /* Quill Classes Support */
 .prose .ql-align-center {
   @apply text-center;
@@ -113,24 +120,72 @@
   @apply text-justify;
 }
 
-/* Quill Dark Mode Overrides */
+/* Quill Editor Overrides */
 .ql-toolbar.ql-snow {
-  @apply border-white/10 bg-surface-container-low rounded-t-xl;
+  @apply border-outline bg-surface-container-low rounded-t-xl flex flex-wrap gap-1 p-2;
 }
 .ql-container.ql-snow {
-  @apply border-white/10 bg-surface-container-low rounded-b-xl text-on-surface font-body;
+  @apply border-outline bg-surface-container-low rounded-b-xl text-on-surface font-body overflow-hidden;
 }
 .ql-editor {
-  @apply min-h-[300px];
+  @apply min-h-[300px] text-lg leading-relaxed;
 }
-.ql-snow .ql-stroke {
-  stroke: #e1e2e6 !important;
+
+/* Fix icon colors for light mode */
+:root .ql-snow .ql-stroke {
+  stroke: #334155 !important; /* Slate 700 */
 }
-.ql-snow .ql-fill {
-  fill: #e1e2e6 !important;
+:root .ql-snow .ql-fill {
+  fill: #334155 !important;
 }
-.ql-snow .ql-picker {
-  color: #e1e2e6 !important;
+:root .ql-snow .ql-picker {
+  color: #334155 !important;
+}
+
+/* Fix icon colors for dark mode */
+:root.dark .ql-snow .ql-stroke {
+  stroke: #cbd5e1 !important; /* Slate 300 */
+}
+:root.dark .ql-snow .ql-fill {
+  fill: #cbd5e1 !important;
+}
+:root.dark .ql-snow .ql-picker {
+  color: #cbd5e1 !important;
+}
+
+/* Fix Quill icon alignment and sizing */
+.ql-snow.ql-toolbar button svg {
+  display: inline !important;
+  vertical-align: middle !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.ql-snow.ql-toolbar button {
+  @apply flex items-center justify-center w-8 h-8 rounded-lg hover:bg-on-surface/5 transition-colors;
+}
+
+.ql-snow.ql-toolbar .ql-formats {
+  @apply mr-2 flex items-center;
+}
+
+.ql-snow .ql-picker-label svg {
+  display: inline !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Ensure picker labels and options have correct color */
+.ql-snow .ql-picker-label {
+  @apply flex items-center;
+}
+
+.ql-snow .ql-tooltip {
+  @apply bg-surface-container-lowest border-outline text-on-surface rounded-xl shadow-xl p-4 z-50;
+}
+
+.ql-snow .ql-tooltip input[type=text] {
+  @apply bg-surface border border-outline rounded-lg px-2 py-1 outline-none text-xs;
 }
 
 /* Custom Embed Button Icon */

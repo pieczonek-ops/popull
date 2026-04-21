@@ -21,15 +21,36 @@ HtmlBlot.tagName = 'div';
 HtmlBlot.className = 'ql-html-embed';
 Quill.register(HtmlBlot);
 
-// Ensure standard video blot is treated as an iframe
+// Ensure standard video blot is treated as an iframe and handles YouTube/Vimeo links correctly
 const Video = Quill.import('formats/video') as any;
 class CustomVideo extends Video {
   static create(value: string) {
-    const node = super.create(value);
+    let url = value;
+    
+    // YouTube conversion: watch?v= -> embed/
+    if (url.includes('youtube.com/watch?v=')) {
+      url = url.replace('watch?v=', 'embed/');
+      const ampersandPosition = url.indexOf('&');
+      if (ampersandPosition !== -1) {
+        url = url.substring(0, ampersandPosition);
+      }
+    } else if (url.includes('youtu.be/')) {
+      const id = url.split('/').pop();
+      url = `https://www.youtube.com/embed/${id}`;
+    }
+    
+    // Vimeo conversion: vimeo.com/ID -> player.vimeo.com/video/ID
+    if (url.includes('vimeo.com/') && !url.includes('player.vimeo.com')) {
+      const id = url.split('/').pop();
+      url = `https://player.vimeo.com/video/${id}`;
+    }
+
+    const node = super.create(url);
     node.setAttribute('frameborder', '0');
     node.setAttribute('allowfullscreen', 'true');
     node.setAttribute('width', '100%');
     node.setAttribute('height', '100%');
+    node.className = 'ql-video';
     return node;
   }
 }
