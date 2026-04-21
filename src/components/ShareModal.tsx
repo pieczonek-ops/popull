@@ -1,5 +1,5 @@
 import { X, Facebook, Twitter, Linkedin, Link2, Mail, MessageSquare } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
 
 interface ShareModalProps {
@@ -63,14 +63,14 @@ export default function ShareModal({ isOpen, onClose, title, url }: ShareModalPr
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -122,7 +122,7 @@ export default function ShareModal({ isOpen, onClose, title, url }: ShareModalPr
                 </button>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

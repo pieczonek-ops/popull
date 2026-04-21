@@ -1,6 +1,6 @@
 import { ArrowRight, Play, Star, Zap, Info, MessageSquare } from 'lucide-react';
 import { NewsArticle, HomeConfig } from '../types';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { slugify } from '../lib/slugify';
 import { formatDate } from '../lib/dateUtils';
@@ -37,7 +37,7 @@ export default function Hero({ article, config }: HeroProps) {
         <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
         <h2 className="font-headline text-xs font-bold uppercase tracking-widest text-primary">Najważniejsze dzisiaj</h2>
       </div>
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className={`relative overflow-hidden rounded-3xl lg:rounded-xl aspect-[16/9] lg:aspect-[21/9] ${config?.backgroundColor ? '' : 'bg-surface-container-low'}`}
@@ -85,7 +85,7 @@ export default function Hero({ article, config }: HeroProps) {
             Czytaj dalej <ButtonIcon className="w-4 h-4" />
           </Link>
         </div>
-      </motion.div>
+      </m.div>
     </section>
   );
 }

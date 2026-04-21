@@ -1,11 +1,12 @@
 import { ArrowLeft, Clock, Calendar, Share2, Bookmark, MessageCircle, Send, ChevronLeft, ChevronRight, Layers } from 'lucide-react';
 import { NewsArticle, CommentsConfig } from '../types';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/dateUtils';
 import { BREAKING_NEWS, ENTERTAINMENT_NEWS, TECH_NEWS } from '../constants';
 import { slugify } from '../lib/slugify';
 import { useState, useEffect } from 'react';
+import { useSocialScripts } from '../hooks/useSocialScripts';
 
 import CommentSection from './CommentSection';
 import ShareModal from './ShareModal';
@@ -20,6 +21,9 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   
+  // Lazily load social scripts only on article page
+  useSocialScripts();
+
   const recommended = [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS]
     .filter(a => a.id !== article.id)
     .slice(0, 4);
@@ -32,35 +36,39 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
     setActiveStep(0);
     
     // Re-parse social widgets after content render
-    const timer = setTimeout(() => {
+    const parseSocial = () => {
       // @ts-ignore
-      if (window.twttr?.widgets) {
+      if (window.twttr?.widgets?.load) {
         // @ts-ignore
         window.twttr.widgets.load();
       }
       // @ts-ignore
-      if (window.FB?.XFBML) {
+      if (window.FB?.XFBML?.parse) {
         // @ts-ignore
         window.FB.XFBML.parse();
       }
-    }, 100);
+    };
+
+    const timer = setTimeout(parseSocial, 500);
     return () => clearTimeout(timer);
   }, [article.id]);
 
   // Re-parse when step changes (multi-page mode)
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const parseSocial = () => {
       // @ts-ignore
-      if (window.twttr?.widgets) {
+      if (window.twttr?.widgets?.load) {
         // @ts-ignore
         window.twttr.widgets.load();
       }
       // @ts-ignore
-      if (window.FB?.XFBML) {
+      if (window.FB?.XFBML?.parse) {
         // @ts-ignore
         window.FB.XFBML.parse();
       }
-    }, 100);
+    };
+
+    const timer = setTimeout(parseSocial, 500);
     return () => clearTimeout(timer);
   }, [activeStep]);
 
@@ -84,7 +92,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
   };
 
   return (
-    <motion.div 
+    <m.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-surface"
@@ -185,7 +193,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
         <div className="relative">
           <div className="overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.div 
+              <m.div 
                 key={activeStep}
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -241,7 +249,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                   </div>
                 ))}
 
-              </motion.div>
+              </m.div>
             </AnimatePresence>
 
             {/* Navigation for Multi-page */}
@@ -335,6 +343,6 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
           </div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

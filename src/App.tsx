@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useMemo } from 'react';
 import { Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -26,9 +26,14 @@ const LoadingFallback = () => (
 );
 
 function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], homeConfig: HomeConfig | null }) {
-  const heroArticle = homeConfig?.hero.articleId 
-    ? allArticles.find(a => a.id === homeConfig.hero.articleId) || [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS].find(a => a.id === homeConfig.hero.articleId) || BREAKING_NEWS
-    : allArticles.find(a => a.isBreaking) || BREAKING_NEWS;
+  const staticNews = useMemo(() => [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS], []);
+
+  const heroArticle = useMemo(() => {
+    if (homeConfig?.hero.articleId) {
+      return allArticles.find(a => a.id === homeConfig.hero.articleId) || staticNews.find(a => a.id === homeConfig.hero.articleId) || BREAKING_NEWS;
+    }
+    return allArticles.find(a => a.isBreaking) || BREAKING_NEWS;
+  }, [homeConfig?.hero.articleId, allArticles, staticNews]);
 
   return (
     <div className="space-y-10">
@@ -144,14 +149,13 @@ function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], hom
         })
       ) : (
         <>
-          {/* Fallback default sections if no config exists */}
-          <div>
+          <div className="space-y-8">
             <div className="flex items-center justify-between mb-8">
               <h3 className="font-headline text-2xl font-black text-on-surface uppercase tracking-tight">Rozrywka</h3>
               <Link className="text-primary text-xs font-bold uppercase tracking-widest hover:underline" to="/category/Rozrywka">Zobacz więcej</Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[...allArticles.filter(a => a.category === 'Rozrywka'), ...ENTERTAINMENT_NEWS].slice(0, 4).map((article) => (
+              {ENTERTAINMENT_NEWS.slice(0, 4).map((article) => (
                  <NewsCard key={article.id} article={article} showCommentsCount={true} />
               ))}
             </div>
@@ -163,7 +167,7 @@ function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], hom
               <Link className="text-primary text-xs font-bold uppercase tracking-widest hover:underline" to="/category/Technologia">Trendy Tech</Link>
             </div>
             <div className="space-y-8">
-              {[...allArticles.filter(a => a.category === 'Technologia'), ...TECH_NEWS].slice(0, 4).map((article) => (
+              {TECH_NEWS.slice(0, 4).map((article) => (
                 <NewsCard key={article.id} article={article} variant="horizontal" showCommentsCount={true} />
               ))}
             </div>
@@ -177,8 +181,11 @@ function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], hom
 function ArticleView({ allArticles, commentsConfig }: { allArticles: NewsArticle[], commentsConfig: any }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const article = allArticles.find(a => a.id === id) || 
-                  [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS].find(a => a.id === id);
+  const staticNews = useMemo(() => [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS], []);
+  
+  const article = useMemo(() => 
+    allArticles.find(a => a.id === id) || staticNews.find(a => a.id === id)
+  , [id, allArticles, staticNews]);
   
   return article ? <ArticlePage article={article} config={commentsConfig} onBack={() => navigate('/')} /> : null;
 }
@@ -186,10 +193,14 @@ function ArticleView({ allArticles, commentsConfig }: { allArticles: NewsArticle
 function CategoryView({ allArticles, commentsConfig }: { allArticles: NewsArticle[], commentsConfig: any }) {
   const { name } = useParams();
   const navigate = useNavigate();
-  const categoryName = name ? decodeURIComponent(name) : '';
-  const categoryArticles = allArticles.filter(a => a.category === categoryName);
-  const staticArticles = [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS].filter(a => a.category === categoryName);
-  const combined = [...categoryArticles, ...staticArticles];
+  const categoryName = useMemo(() => name ? decodeURIComponent(name) : '', [name]);
+  const staticNews = useMemo(() => [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS], []);
+  
+  const combined = useMemo(() => {
+    const categoryArticles = allArticles.filter(a => a.category === categoryName);
+    const staticArticles = staticNews.filter(a => a.category === categoryName);
+    return [...categoryArticles, ...staticArticles];
+  }, [categoryName, allArticles, staticNews]);
 
   return <CategoryPage category={categoryName} articles={combined} config={commentsConfig} onBack={() => navigate('/')} />;
 }
@@ -279,12 +290,17 @@ function MainContent() {
 }
 
 import { ThemeProvider } from './contexts/ThemeContext';
+import { LazyMotion } from 'motion/react';
+
+const loadFeatures = () => import('./motion-features').then(res => res.default);
 
 export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <MainContent />
+        <LazyMotion features={loadFeatures} strict>
+          <MainContent />
+        </LazyMotion>
       </AuthProvider>
     </ThemeProvider>
   );

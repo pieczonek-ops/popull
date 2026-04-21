@@ -1,5 +1,4 @@
 import { NewsArticle } from '../types';
-import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { slugify } from '../lib/slugify';
 import { formatDate } from '../lib/dateUtils';
@@ -34,7 +33,7 @@ export default function NewsCard({
 
   if (variant === 'video') {
     return (
-      <motion.article 
+      <article 
         className="cursor-pointer group"
       >
         <Link to={articleLink} className="relative block aspect-video overflow-hidden rounded-2xl mb-4 bg-surface-container">
@@ -70,13 +69,13 @@ export default function NewsCard({
             </span>
           )}
         </Link>
-      </motion.article>
+      </article>
     );
   }
 
   if (variant === 'horizontal') {
     return (
-      <motion.article 
+      <article 
         className="flex flex-col md:flex-row gap-6 items-start cursor-pointer"
       >
         <Link to={articleLink} className="relative w-full md:w-48 h-32 flex-shrink-0 rounded-xl overflow-hidden bg-surface-container">
@@ -118,14 +117,14 @@ export default function NewsCard({
             </span>
           )}
         </div>
-      </motion.article>
+      </article>
     );
   }
 
   if (variant === 'small') {
     return (
       <Link to={articleLink}>
-        <motion.article 
+        <article 
           className="bg-surface-container-low p-4 rounded-2xl shadow-sm border border-outline cursor-pointer h-full relative"
         >
           {showCommentsCount && commentsCount > 0 && (
@@ -149,13 +148,13 @@ export default function NewsCard({
           >
             {article.title}
           </h5>
-        </motion.article>
+        </article>
       </Link>
     );
   }
 
   return (
-    <motion.article 
+    <article 
       className="cursor-pointer"
     >
       <Link to={articleLink} className="relative block aspect-[16/9] overflow-hidden rounded-2xl mb-4 bg-surface-container">
@@ -191,6 +190,6 @@ export default function NewsCard({
           {article.description}
         </p>
       )}
-    </motion.article>
+    </article>
   );
 }
