@@ -1,6 +1,7 @@
 import { ArrowLeft, Clock, Calendar, Share2, Bookmark, MessageCircle, Send, ChevronLeft, ChevronRight, Layers } from 'lucide-react';
 import { NewsArticle, CommentsConfig } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/dateUtils';
 import { BREAKING_NEWS, ENTERTAINMENT_NEWS, TECH_NEWS } from '../constants';
 import { slugify } from '../lib/slugify';
@@ -287,7 +288,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
               isOpen={isShareModalOpen} 
               onClose={() => setIsShareModalOpen(false)} 
               title={article.title}
-              url={`#article/${article.id}/${slugify(article.title)}`}
+              url={window.location.href}
             />
 
             {/* Comment Section */}
@@ -298,9 +299,9 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
               <h3 className="text-2xl font-black mb-10 uppercase tracking-tight">Polecane artykuły</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {recommended.map((item) => (
-                  <a 
+                  <Link 
                     key={item.id}
-                    href={`#article/${item.id}/${slugify(item.title)}`}
+                    to={`/article/${item.id}/${slugify(item.title)}`}
                     className="group"
                   >
                     <div className="aspect-video rounded-xl overflow-hidden mb-4 bg-surface-container">
@@ -314,7 +315,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                     <h5 className="font-bold text-base leading-tight group-hover:text-primary group-hover:underline transition-colors line-clamp-2">
                       {item.title}
                     </h5>
-                  </a>
+                  </Link>
                 ))}
               </div>
             </section>

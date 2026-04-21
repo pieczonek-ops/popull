@@ -1,4 +1,5 @@
 import { VIRAL_NEWS } from '../constants';
+import { Link } from 'react-router-dom';
 
 export default function Sidebar() {
   return (
@@ -16,9 +17,9 @@ export default function Sidebar() {
                   <h6 className="font-bold text-sm leading-tight group-hover:text-primary group-hover:underline transition-colors line-clamp-2">
                     {item.title}
                   </h6>
-                  <a href={`#category/${item.category}`} className="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest hover:text-primary transition-colors">
+                  <Link to={`/category/${item.category}`} className="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest hover:text-primary transition-colors">
                     {item.category}
-                  </a>
+                  </Link>
                 </div>
               </div>
             ))}

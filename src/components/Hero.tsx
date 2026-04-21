@@ -1,6 +1,7 @@
 import { ArrowRight, Play, Star, Zap, Info, MessageSquare } from 'lucide-react';
 import { NewsArticle, HomeConfig } from '../types';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { slugify } from '../lib/slugify';
 import { formatDate } from '../lib/dateUtils';
 import { useCommentsCount } from '../hooks/useCommentsCount';
@@ -19,7 +20,7 @@ const ICONS = {
 };
 
 export default function Hero({ article, config }: HeroProps) {
-  const articleLink = `#article/${article.id}/${slugify(article.title)}`;
+  const articleLink = `/article/${article.id}/${slugify(article.title)}`;
   const commentsCount = useCommentsCount(article.id);
   
   const ButtonIcon = config?.buttonIcon ? (ICONS[config.buttonIcon as keyof typeof ICONS] || ArrowRight) : ArrowRight;
@@ -62,24 +63,24 @@ export default function Hero({ article, config }: HeroProps) {
               </div>
             )}
           </div>
-          <a href={articleLink} className="block">
+          <Link to={articleLink} className="block">
             <h1 
               className="font-headline text-3xl lg:text-5xl font-extrabold text-white leading-tight mb-4 tracking-tight hover:text-primary hover:underline transition-colors"
               style={{ color: config?.textColor }}
             >
               {article.title}
             </h1>
-          </a>
+          </Link>
           <p className="text-white/80 text-sm lg:text-base max-w-xl line-clamp-2 mb-6">
             {article.description}
           </p>
-          <a 
-            href={articleLink} 
+          <Link 
+            to={articleLink} 
             className={`${buttonStyles[config?.buttonType || 'gradient']} px-8 py-3 rounded-full font-bold text-sm flex items-center gap-2 w-fit transition-transform active:scale-95`}
             style={{ backgroundColor: config?.buttonType === 'solid' ? config?.buttonColor : undefined, borderColor: config?.buttonType === 'outline' ? config?.buttonColor : undefined, color: config?.buttonType === 'outline' ? config?.buttonColor : undefined }}
           >
             Czytaj dalej <ButtonIcon className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </motion.div>
     </section>

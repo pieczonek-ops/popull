@@ -1,5 +1,6 @@
 import { NewsArticle } from '../types';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { slugify } from '../lib/slugify';
 import { formatDate } from '../lib/dateUtils';
 import { MessageSquare, Play } from 'lucide-react';
@@ -27,8 +28,8 @@ export default function NewsCard({
   showReadTime = true,
   showCommentsCount = false
 }: NewsCardProps) {
-  const articleLink = `#article/${article.id}/${slugify(article.title)}`;
-  const categoryLink = `#category/${article.category}`;
+  const articleLink = `/article/${article.id}/${slugify(article.title)}`;
+  const categoryLink = `/category/${article.category}`;
   const commentsCount = useCommentsCount(article.id);
 
   if (variant === 'video') {
@@ -36,7 +37,7 @@ export default function NewsCard({
       <motion.article 
         className="cursor-pointer group"
       >
-        <a href={articleLink} className="relative block aspect-video overflow-hidden rounded-2xl mb-4 bg-surface-container">
+        <Link to={articleLink} className="relative block aspect-video overflow-hidden rounded-2xl mb-4 bg-surface-container">
           {showCommentsCount && commentsCount > 0 && (
             <div className="absolute top-3 right-3 z-10 flex items-center gap-1 text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded-full font-bold shadow-lg">
               <MessageSquare className="w-3 h-3" /> {commentsCount}
@@ -53,8 +54,8 @@ export default function NewsCard({
               <Play className="w-8 h-8 fill-current ml-1" />
             </div>
           </div>
-        </a>
-        <a href={articleLink} className="block px-2">
+        </Link>
+        <Link to={articleLink} className="block px-2">
           <h4 
             className="font-headline text-lg font-bold hover:text-primary transition-colors leading-snug line-clamp-2"
             style={{ color: linkColor }}
@@ -66,7 +67,7 @@ export default function NewsCard({
               {showDate && formatDate(article.timestamp)} 
             </span>
           )}
-        </a>
+        </Link>
       </motion.article>
     );
   }
@@ -76,7 +77,7 @@ export default function NewsCard({
       <motion.article 
         className="flex flex-col md:flex-row gap-6 items-start cursor-pointer"
       >
-        <a href={articleLink} className="relative w-full md:w-48 h-32 flex-shrink-0 rounded-xl overflow-hidden bg-surface-container">
+        <Link to={articleLink} className="relative w-full md:w-48 h-32 flex-shrink-0 rounded-xl overflow-hidden bg-surface-container">
           {showCommentsCount && commentsCount > 0 && (
             <div className="absolute top-2 right-2 z-10 flex items-center gap-1 text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded-full font-bold shadow-lg">
               <MessageSquare className="w-3 h-3" /> {commentsCount}
@@ -88,17 +89,17 @@ export default function NewsCard({
             alt={article.title}
             referrerPolicy="no-referrer"
           />
-        </a>
+        </Link>
         <div className="flex-1 overflow-hidden">
           <div className="mb-2">
-            <a href={articleLink}>
+            <Link to={articleLink}>
               <h4 
                 className="font-headline text-lg font-bold hover:text-primary hover:underline transition-colors leading-tight break-words"
                 style={{ color: linkColor }}
               >
                 {article.title}
               </h4>
-            </a>
+            </Link>
           </div>
           {showDescription && (
             <p className="text-on-surface-variant text-sm line-clamp-2 break-words">
@@ -119,7 +120,7 @@ export default function NewsCard({
 
   if (variant === 'small') {
     return (
-      <a href={articleLink}>
+      <Link to={articleLink}>
         <motion.article 
           className="bg-surface-container-low p-4 rounded-2xl shadow-sm border border-outline cursor-pointer h-full relative"
         >
@@ -143,7 +144,7 @@ export default function NewsCard({
             {article.title}
           </h5>
         </motion.article>
-      </a>
+      </Link>
     );
   }
 
@@ -151,7 +152,7 @@ export default function NewsCard({
     <motion.article 
       className="cursor-pointer"
     >
-      <a href={articleLink} className="relative block aspect-[16/9] overflow-hidden rounded-2xl mb-4 bg-surface-container">
+      <Link to={articleLink} className="relative block aspect-[16/9] overflow-hidden rounded-2xl mb-4 bg-surface-container">
         {showCommentsCount && commentsCount > 0 && (
           <div className="absolute top-4 right-4 z-10 flex items-center gap-1 text-xs bg-primary text-on-primary px-3 py-1 rounded-full font-bold shadow-xl">
             <MessageSquare className="w-3 h-3" /> {commentsCount}
@@ -163,20 +164,20 @@ export default function NewsCard({
           alt={article.title}
           referrerPolicy="no-referrer"
         />
-      </a>
+      </Link>
       {showCategory && (
-        <a href={categoryLink} className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded-sm uppercase mb-2 inline-block tracking-widest hover:bg-primary hover:text-on-primary transition-colors">
+        <Link to={categoryLink} className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded-sm uppercase mb-2 inline-block tracking-widest hover:bg-primary hover:text-on-primary transition-colors">
           {article.category}
-        </a>
+        </Link>
       )}
-      <a href={articleLink} className="block">
+      <Link to={articleLink} className="block">
         <h4 
           className="font-headline text-xl font-bold mb-2 hover:text-primary hover:underline transition-colors leading-tight break-words"
           style={{ color: linkColor }}
         >
           {article.title}
         </h4>
-      </a>
+      </Link>
       {showDescription && (
         <p className="text-on-surface-variant text-sm line-clamp-2 break-words">
           {article.description}

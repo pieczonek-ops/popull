@@ -12,7 +12,7 @@ interface ShareModalProps {
 export default function ShareModal({ isOpen, onClose, title, url }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
 
-  const fullUrl = `${window.location.origin}${window.location.pathname}${url}`;
+  const fullUrl = url.startsWith('http') ? url : `${window.location.origin}${url}`;
 
   const shareOptions = [
     {
