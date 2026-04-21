@@ -59,9 +59,7 @@ import { db } from '../firebase';
 import { NewsArticle, HomeConfig, HomeSection, CommentsConfig, ArticleSubSection } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/dateUtils';
-import { translateArticleBulk } from '../services/geminiService';
-import SEO from './SEO';
-import { Plus, Edit2, Trash2, X, Save, LayoutDashboard, LogOut, Settings, Home, Layers, MoveUp, MoveDown, MessageCircle, Globe, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Save, LayoutDashboard, LogOut, Settings, Home, Layers, MoveUp, MoveDown, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AdminPanel() {
@@ -71,16 +69,6 @@ export default function AdminPanel() {
   const [currentArticle, setCurrentArticle] = useState<Partial<NewsArticle> | null>(null);
   const [activeTab, setActiveTab] = useState<'articles' | 'home'>('articles');
   const [homeConfig, setHomeConfig] = useState<HomeConfig | null>(null);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [autoTranslate, setAutoTranslate] = useState(true);
-
-  const TARGET_LANGUAGES = [
-    { code: 'en', name: 'English' },
-    { code: 'es', name: 'Español' },
-    { code: 'pt', name: 'Português' },
-    { code: 'de', name: 'Deutsch' },
-    { code: 'fr', name: 'Français' },
-  ];
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -167,26 +155,8 @@ export default function AdminPanel() {
   const handleSaveArticle = async () => {
     if (!currentArticle?.title || !currentArticle?.content) return;
 
-    setIsTranslating(true);
-    let translations = currentArticle.translations || {};
-
-    if (autoTranslate) {
-      try {
-        const bulkResult = await translateArticleBulk(
-          currentArticle.title,
-          currentArticle.description || '',
-          currentArticle.content,
-          TARGET_LANGUAGES
-        );
-        translations = { ...translations, ...bulkResult };
-      } catch (err) {
-        console.error("Auto-translation failed:", err);
-      }
-    }
-
     const articleData = {
       ...currentArticle,
-      translations,
       timestamp: currentArticle.timestamp || new Date().toISOString(),
       readTime: currentArticle.readTime || '5 min',
       authorId: user.uid,
@@ -295,7 +265,6 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-surface p-4 lg:p-8">
-      <SEO title="Panel Administratora" noindex={true} />
       <header className="flex justify-between items-center mb-12 max-w-6xl mx-auto">
         <div className="flex items-center gap-4">
           <LayoutDashboard className="w-8 h-8 text-primary" />
@@ -932,23 +901,6 @@ export default function AdminPanel() {
                   </div>
 
                   <div className="flex items-center gap-4 border-l border-white/10 pl-8">
-                    <label className="flex items-center gap-2 cursor-pointer group">
-                      <input 
-                        type="checkbox" 
-                        className="w-5 h-5 rounded border-white/10 bg-surface-container-low text-primary focus:ring-primary"
-                        checked={autoTranslate}
-                        onChange={e => setAutoTranslate(e.target.checked)}
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-                          <Globe className="w-4 h-4 text-primary" /> Auto-Tłumaczenie (AI Pro)
-                        </span>
-                        <span className="text-[8px] text-primary/60 font-bold tracking-[0.2em] uppercase">Wysoka Jakość (Pro 3.1)</span>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div className="flex items-center gap-4 border-l border-white/10 pl-8">
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Tryb wyświetlania</label>
                     <select 
                       className="bg-surface-container-low border border-white/10 rounded-full py-1 px-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-primary"
@@ -1042,33 +994,12 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
-                <div className="flex gap-4 pt-8 relative">
-                  {isTranslating && (
-                    <div className="absolute inset-0 z-[110] bg-surface-container/60 backdrop-blur-md rounded-xl flex items-center justify-center p-8 border border-primary/20">
-                      <div className="flex flex-col items-center gap-6 text-center">
-                        <div className="relative">
-                          <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                          <Globe className="w-6 h-6 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-                        </div>
-                        <div className="space-y-2">
-                          <h3 className="font-black uppercase tracking-tighter text-xl">Wysokiej jakości tłumaczenie...</h3>
-                          <p className="text-xs font-bold uppercase tracking-widest text-primary/60">Używanie modelu Gemini 3.1 Pro</p>
-                          <p className="text-[10px] text-on-surface-variant max-w-[200px]">Trwa generowanie treści w 5 językach. Może to potrwać kilkanaście sekund.</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                <div className="flex gap-4 pt-8">
                   <button 
                     onClick={handleSaveArticle}
-                    disabled={isTranslating}
-                    className="flex-1 bg-primary text-on-primary py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                    className="flex-1 bg-primary text-on-primary py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform"
                   >
-                    {isTranslating ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Save className="w-5 h-5" />
-                    )}
-                    {isTranslating ? 'Przetwarzanie AI...' : 'Zapisz Artykuł'}
+                    <Save className="w-5 h-5" /> Zapisz Artykuł
                   </button>
                   <button 
                     onClick={() => setIsEditing(false)}

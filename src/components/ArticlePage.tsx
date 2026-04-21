@@ -1,4 +1,4 @@
-import { ArrowLeft, Clock, Calendar, Share2, Bookmark, MessageCircle, Send, ChevronLeft, ChevronRight, Layers, Globe, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Bookmark, MessageCircle, Send, ChevronLeft, ChevronRight, Layers } from 'lucide-react';
 import { NewsArticle, CommentsConfig } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -6,11 +6,9 @@ import { formatDate } from '../lib/dateUtils';
 import { BREAKING_NEWS, ENTERTAINMENT_NEWS, TECH_NEWS } from '../constants';
 import { slugify } from '../lib/slugify';
 import { useState, useEffect } from 'react';
-import { translateArticle, TranslationResult } from '../services/geminiService';
 
 import CommentSection from './CommentSection';
 import ShareModal from './ShareModal';
-import SEO from './SEO';
 
 interface ArticlePageProps {
   article: NewsArticle;
@@ -18,23 +16,9 @@ interface ArticlePageProps {
   onBack: () => void;
 }
 
-const LANGUAGES = [
-  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-];
-
 export default function ArticlePage({ article, config, onBack }: ArticlePageProps) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [currentLang, setCurrentLang] = useState('pl');
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [translations, setTranslations] = useState<Record<string, TranslationResult>>({
-    pl: { title: article.title, description: article.description, content: article.content }
-  });
   
   const recommended = [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS]
     .filter(a => a.id !== article.id)
@@ -43,23 +27,11 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
   const totalSteps = 1 + (article.subSections?.length || 0);
   const isMultiPage = article.displayMode === 'multi' && totalSteps > 1;
 
-  // Reset state when article changes
+  // Reset page when article changes and re-parse social widgets
   useEffect(() => {
     setActiveStep(0);
-    setCurrentLang('pl');
     
-    // Initialize with existing translations if available
-    const initialTranslations: Record<string, TranslationResult> = {
-      pl: { title: article.title, description: article.description, content: article.content || '' }
-    };
-    
-    if (article.translations) {
-      Object.entries(article.translations).forEach(([code, data]) => {
-        initialTranslations[code] = data;
-      });
-    }
-    
-    setTranslations(initialTranslations);
+    // Re-parse social widgets after content render
     const timer = setTimeout(() => {
       // @ts-ignore
       if (window.twttr?.widgets) {
@@ -75,65 +47,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
     return () => clearTimeout(timer);
   }, [article.id]);
 
-  const handleTranslate = async (langCode: string) => {
-    if (langCode === currentLang || isTranslating) return;
-    
-    if (translations[langCode]) {
-      setCurrentLang(langCode);
-      return;
-    }
-
-    setIsTranslating(true);
-    try {
-      const langName = LANGUAGES.find(l => l.code === langCode)?.name || langCode;
-      const result = await translateArticle(article.title, article.description, article.content, langName);
-      setTranslations(prev => ({ ...prev, [langCode]: result }));
-      setCurrentLang(langCode);
-    } catch (error) {
-      console.error("Translation failed", error);
-    } finally {
-      setIsTranslating(false);
-    }
-  };
-
-  const displayedContent = translations[currentLang] || translations['pl'];
-  const origin = window.location.origin;
-  const currentSlug = slugify(displayedContent.title);
-  const canonicalUrl = `${origin}/article/${article.id}/${currentSlug}`;
-  
-  // SEO Structured Data
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Strona główna", "item": origin },
-      { "@type": "ListItem", "position": 2, "name": article.category, "item": `${origin}/category/${article.category}` },
-      { "@type": "ListItem", "position": 3, "name": displayedContent.title }
-    ]
-  };
-
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": displayedContent.title,
-    "description": displayedContent.description,
-    "image": article.imageUrl,
-    "datePublished": article.timestamp,
-    "author": { "@type": "Person", "name": "Pulse News Editor" },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Pulse News",
-      "logo": { "@type": "ImageObject", "url": `${origin}/logo.png` }
-    },
-    "mainEntityOfPage": { "@type": "WebPage", "@id": canonicalUrl }
-  };
-
-  const translationLinks: Record<string, string> = {};
-  Object.keys(translations).forEach(code => {
-    translationLinks[code] = canonicalUrl; // In a real app with language-specific URLs, this would change
-  });
-
-  // Re-parse social widgets when step changes
+  // Re-parse when step changes (multi-page mode)
   useEffect(() => {
     const timer = setTimeout(() => {
       // @ts-ignore
@@ -175,55 +89,15 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
       animate={{ opacity: 1, y: 0 }}
       className="bg-surface"
     >
-      <SEO 
-        title={displayedContent.title}
-        description={displayedContent.description}
-        canonical={canonicalUrl}
-        ogType="article"
-        ogImage={article.imageUrl}
-        lang={currentLang}
-        translations={translationLinks}
-        structuredData={[breadcrumbSchema, articleSchema]}
-      />
       <div className="py-2">
-        <div className="flex justify-between items-center mb-8 gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={onBack}
-              className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors group"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-bold uppercase tracking-widest text-xs">Powrót</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-            <div className="flex items-center gap-2 bg-surface-container-low p-1 rounded-full border border-outline">
-              <div className="p-2 text-on-surface-variant">
-                <Globe className="w-4 h-4" />
-              </div>
-              <div className="flex gap-1 pr-1">
-                {LANGUAGES.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => handleTranslate(lang.code)}
-                    disabled={isTranslating}
-                    className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${
-                      currentLang === lang.code 
-                        ? 'bg-primary text-on-primary shadow-lg scale-105' 
-                        : 'hover:bg-white/5 text-on-surface-variant'
-                    }`}
-                  >
-                    <span>{lang.flag}</span>
-                    <span className="hidden sm:inline">{lang.name}</span>
-                    {isTranslating && currentLang !== lang.code && currentLang === 'pl' && (
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="flex justify-between items-center mb-8">
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-bold uppercase tracking-widest text-xs">Powrót</span>
+          </button>
 
           {isMultiPage && (
             <div className="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full border border-outline scale-90 md:scale-100">
@@ -273,25 +147,17 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
           </div>
 
           <h1 className="text-3xl lg:text-5xl font-black text-on-surface leading-tight mb-8 tracking-tight break-words">
-            {activeStep === 0 ? displayedContent.title : article.subSections![activeStep-1].title || article.title}
+            {activeStep === 0 ? article.title : article.subSections![activeStep-1].title || article.title}
           </h1>
 
           {activeStep === 0 && (
             <p className="text-lg md:text-xl text-on-surface leading-relaxed font-bold break-words mb-8">
-              {displayedContent.description}
+              {article.description}
             </p>
           )}
         </header>
 
-        <div className="mb-12 relative">
-          {isTranslating && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-surface/40 backdrop-blur-[2px] rounded-3xl">
-              <div className="bg-surface-container p-6 rounded-2xl border border-outline shadow-2xl flex flex-col items-center gap-4">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                <p className="font-bold text-xs uppercase tracking-widest animate-pulse">Tłumaczenie treści...</p>
-              </div>
-            </div>
-          )}
+        <div className="mb-12">
           <div className="aspect-[16/9] rounded-3xl overflow-hidden bg-surface-container shadow-2xl relative group/img">
             <img 
               src={activeStep === 0 ? article.imageUrl : article.subSections![activeStep-1].imageUrl || article.imageUrl} 
@@ -327,7 +193,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                 {activeStep === 0 ? (
                   <div 
                     className="prose max-w-none"
-                    dangerouslySetInnerHTML={{ __html: displayedContent.content || article.description }} 
+                    dangerouslySetInnerHTML={{ __html: article.content || article.description }} 
                   />
                 ) : (
                   <div className="space-y-8">

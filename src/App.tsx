@@ -9,7 +9,6 @@ import MobileNav from './components/MobileNav';
 import AdminPanel from './components/AdminPanel';
 import ArticlePage from './components/ArticlePage';
 import CategoryPage from './components/CategoryPage';
-import SEO from './components/SEO';
 import { AuthProvider } from './contexts/AuthContext';
 import { BREAKING_NEWS, ENTERTAINMENT_NEWS, TECH_NEWS, AMAZING_NEWS } from './constants';
 import { collection, query, orderBy, onSnapshot, doc } from 'firebase/firestore';
@@ -18,47 +17,12 @@ import { NewsArticle, HomeConfig } from './types';
 import { LayoutDashboard } from 'lucide-react';
 
 function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], homeConfig: HomeConfig | null }) {
-  const origin = window.location.origin;
-  
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Pulse News",
-    "url": origin,
-    "logo": `${origin}/logo.png`,
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+48-123-456-789",
-      "contactType": "customer service"
-    },
-    "sameAs": [
-      "https://www.facebook.com/pulsenews",
-      "https://www.twitter.com/pulsenews"
-    ]
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": origin,
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": `${origin}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
-  };
-
   const heroArticle = homeConfig?.hero.articleId 
     ? allArticles.find(a => a.id === homeConfig.hero.articleId) || [BREAKING_NEWS, ...ENTERTAINMENT_NEWS, ...TECH_NEWS, ...AMAZING_NEWS].find(a => a.id === homeConfig.hero.articleId) || BREAKING_NEWS
     : allArticles.find(a => a.isBreaking) || BREAKING_NEWS;
 
   return (
     <div className="space-y-10">
-      <SEO 
-        title="Najświeższe wiadomości ze świata" 
-        description="Bądź na bieżąco z najnowszymi informacjami. Technologia, Rozrywka, Świat i Niesamowite historie w jednym miejscu."
-        structuredData={[organizationSchema, websiteSchema]}
-      />
       <Hero article={heroArticle} config={homeConfig?.hero} />
       
       {homeConfig?.sections && homeConfig.sections.length > 0 ? (
