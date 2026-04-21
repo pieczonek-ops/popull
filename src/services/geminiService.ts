@@ -1,6 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let genAI: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.warn("GEMINI_API_KEY is missing. AI features will not work.");
+    }
+    genAI = new GoogleGenAI({ apiKey: apiKey || 'dummy-key' });
+  }
+  return genAI;
+}
 
 export interface TranslationResult {
   title: string;
@@ -23,7 +34,7 @@ Description: ${description}
 Content: ${content}`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
@@ -59,7 +70,7 @@ Description: ${description}
 Content: ${content}`;
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: "gemini-3.1-pro-preview",
       contents: prompt,
       config: {
