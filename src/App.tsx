@@ -166,6 +166,24 @@ function MainContent() {
                               ))}
                             </div>
                           )}
+
+                          {section.layout === 'video' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                              {sectionArticles.map((article) => (
+                                <NewsCard 
+                                  key={article.id} 
+                                  article={article} 
+                                  variant="video" 
+                                  linkColor={section.linkColor}
+                                  showDescription={section.showDescription}
+                                  showDate={section.showDate}
+                                  showCategory={section.showCategory}
+                                  showReadTime={section.showReadTime}
+                                  showCommentsCount={section.showCommentsCount}
+                                />
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

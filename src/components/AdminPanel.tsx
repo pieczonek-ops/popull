@@ -562,6 +562,7 @@ export default function AdminPanel() {
                               <option value="grid">Siatka (Grid)</option>
                               <option value="horizontal">Poziomo (Horizontal)</option>
                               <option value="small">Małe Karty (Small)</option>
+                              <option value="video">Filmy (Video)</option>
                             </select>
                           </div>
                           <div className="space-y-2">

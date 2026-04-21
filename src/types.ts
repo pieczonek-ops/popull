@@ -26,7 +26,7 @@ export interface HomeSection {
   title: string;
   category: string;
   count: number;
-  layout: 'grid' | 'horizontal' | 'small';
+  layout: 'grid' | 'horizontal' | 'small' | 'video';
   backgroundColor?: string;
   backgroundImageUrl?: string;
   titleColor?: string;

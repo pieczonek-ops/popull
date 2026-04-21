@@ -2,12 +2,12 @@ import { NewsArticle } from '../types';
 import { motion } from 'motion/react';
 import { slugify } from '../lib/slugify';
 import { formatDate } from '../lib/dateUtils';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Play } from 'lucide-react';
 import { useCommentsCount } from '../hooks/useCommentsCount';
 
 interface NewsCardProps {
   article: NewsArticle;
-  variant?: 'default' | 'horizontal' | 'small';
+  variant?: 'default' | 'horizontal' | 'small' | 'video';
   linkColor?: string;
   key?: string | number;
   showDescription?: boolean;
@@ -30,6 +30,46 @@ export default function NewsCard({
   const articleLink = `#article/${article.id}/${slugify(article.title)}`;
   const categoryLink = `#category/${article.category}`;
   const commentsCount = useCommentsCount(article.id);
+
+  if (variant === 'video') {
+    return (
+      <motion.article 
+        className="cursor-pointer group"
+      >
+        <a href={articleLink} className="relative block aspect-video overflow-hidden rounded-2xl mb-4 bg-surface-container">
+          {showCommentsCount && commentsCount > 0 && (
+            <div className="absolute top-3 right-3 z-10 flex items-center gap-1 text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded-full font-bold shadow-lg">
+              <MessageSquare className="w-3 h-3" /> {commentsCount}
+            </div>
+          )}
+          <img 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+            src={article.imageUrl} 
+            alt={article.title}
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-primary/90 text-on-primary flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition-transform">
+              <Play className="w-8 h-8 fill-current ml-1" />
+            </div>
+          </div>
+        </a>
+        <a href={articleLink} className="block px-2">
+          <h4 
+            className="font-headline text-lg font-bold hover:text-primary transition-colors leading-snug line-clamp-2"
+            style={{ color: linkColor }}
+          >
+            {article.title}
+          </h4>
+          {(showDate || showReadTime) && (
+            <span className="text-on-surface-variant text-[10px] mt-2 block uppercase tracking-widest font-bold">
+              {showDate && formatDate(article.timestamp)} 
+            </span>
+          )}
+        </a>
+      </motion.article>
+    );
+  }
 
   if (variant === 'horizontal') {
     return (
