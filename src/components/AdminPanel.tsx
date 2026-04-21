@@ -20,6 +20,20 @@ HtmlBlot.blotName = 'html-embed';
 HtmlBlot.tagName = 'div';
 HtmlBlot.className = 'ql-html-embed';
 Quill.register(HtmlBlot);
+
+// Ensure standard video blot is treated as an iframe
+const Video = Quill.import('formats/video') as any;
+class CustomVideo extends Video {
+  static create(value: string) {
+    const node = super.create(value);
+    node.setAttribute('frameborder', '0');
+    node.setAttribute('allowfullscreen', 'true');
+    node.setAttribute('width', '100%');
+    node.setAttribute('height', '100%');
+    return node;
+  }
+}
+Quill.register(CustomVideo, true);
 import { db } from '../firebase';
 import { NewsArticle, HomeConfig, HomeSection, CommentsConfig, ArticleSubSection } from '../types';
 import { useAuth } from '../contexts/AuthContext';

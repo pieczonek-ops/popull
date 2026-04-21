@@ -83,10 +83,23 @@
 }
 
 .ql-html-embed iframe,
-.prose iframe {
+.ql-video,
+.prose iframe,
+.prose .ql-video,
+.prose video {
+  width: 100% !important;
+  aspect-ratio: 16 / 9;
+  height: auto !important;
   max-width: 100% !important;
   border: none !important;
   border-radius: 1rem;
+  margin: 2rem 0 !important;
+  display: block;
+}
+
+.prose p:has(iframe),
+.prose p:has(.ql-video) {
+  max-width: 100%;
 }
 
 .ql-html-embed blockquote.twitter-tweet,

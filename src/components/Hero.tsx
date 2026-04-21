@@ -48,7 +48,6 @@ export default function Hero({ article, config }: HeroProps) {
           alt={article.title}
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent opacity-90"></div>
         <div className="absolute bottom-0 left-0 p-6 lg:p-12 w-full lg:max-w-3xl">
           <div className="flex items-center gap-4 mb-4">
             <div className="inline-block bg-primary px-3 py-1 rounded-sm text-[10px] font-bold text-on-primary uppercase tracking-widest">
