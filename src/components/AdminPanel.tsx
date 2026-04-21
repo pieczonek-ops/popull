@@ -289,7 +289,7 @@ export default function AdminPanel() {
 
             <div className="grid grid-cols-1 gap-4">
               {articles.map((article) => (
-                <div key={article.id} className="bg-surface-container-low p-4 rounded-2xl flex items-center justify-between border border-white/5">
+                <div key={article.id} className="bg-surface-container-low p-4 rounded-2xl flex items-center justify-between border border-outline">
                   <div className="flex items-center gap-4">
                     <img src={article.imageUrl} className="w-16 h-16 rounded-lg object-cover" alt="" referrerPolicy="no-referrer" />
                     <div>
@@ -354,7 +354,7 @@ export default function AdminPanel() {
                     />
                     <input 
                       type="text"
-                      className="flex-1 bg-surface-container border border-white/10 rounded-xl px-4 text-sm"
+                      className="flex-1 bg-surface-container border border-outline rounded-xl px-4 text-sm"
                       value={homeConfig?.hero.backgroundColor || ''}
                       onChange={e => setHomeConfig(prev => prev ? {...prev, hero: {...prev.hero, backgroundColor: e.target.value}} : null)}
                     />
@@ -410,7 +410,7 @@ export default function AdminPanel() {
                 </div>
 
                 <div className="space-y-4 pt-4 md:col-span-2 lg:col-span-3">
-                  <label className="flex items-center gap-3 p-3 rounded-xl bg-surface-container/50 border border-white/5 cursor-pointer hover:bg-surface-container transition-colors w-fit">
+                  <label className="flex items-center gap-3 p-3 rounded-xl bg-surface-container/50 border border-outline cursor-pointer hover:bg-surface-container transition-colors w-fit">
                     <input 
                       type="checkbox" 
                       className="w-5 h-5 rounded border-white/10 bg-surface-container text-primary focus:ring-primary"
@@ -493,9 +493,9 @@ export default function AdminPanel() {
 
               <div className="space-y-6">
                 {homeConfig?.sections.map((section, index) => (
-                  <div key={section.id} className="bg-surface-container-low p-8 rounded-3xl border border-white/5 space-y-8">
+                  <div key={section.id} className="bg-surface-container-low p-8 rounded-3xl border border-outline space-y-8">
                     {/* Header with Title and Controls */}
-                    <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                    <div className="flex items-center justify-between border-b border-outline pb-4">
                       <div className="flex items-center gap-4">
                         <div className="flex flex-col gap-1">
                           <button onClick={() => moveSection(index, 'up')} className="p-1 hover:bg-surface-container rounded text-on-surface-variant hover:text-primary transition-colors"><MoveUp className="w-4 h-4" /></button>

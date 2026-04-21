@@ -121,7 +121,7 @@ export default function NewsCard({
     return (
       <a href={articleLink}>
         <motion.article 
-          className="bg-surface-container-low p-4 rounded-2xl shadow-sm border border-white/5 cursor-pointer h-full relative"
+          className="bg-surface-container-low p-4 rounded-2xl shadow-sm border border-outline cursor-pointer h-full relative"
         >
           {showCommentsCount && commentsCount > 0 && (
             <div className="absolute top-6 right-6 z-10 flex items-center gap-1 text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded-full font-bold shadow-lg">

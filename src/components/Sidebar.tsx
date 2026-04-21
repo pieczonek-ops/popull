@@ -25,12 +25,12 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className="bg-primary-container text-on-surface p-6 rounded-2xl border border-white/5">
+        <div className="bg-primary-container text-on-surface p-6 rounded-2xl border border-outline">
           <h3 className="font-headline font-bold text-lg mb-2 text-primary">Newsletter Pulse</h3>
           <p className="text-xs text-on-surface-variant mb-6">Najważniejsze historie prosto na Twój e-mail, codziennie o 8:00 rano.</p>
           <div className="space-y-3">
             <input 
-              className="w-full bg-surface-container border border-white/10 rounded-full py-2.5 px-4 text-sm placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary outline-none transition-all" 
+              className="w-full bg-surface-container border border-outline rounded-full py-2.5 px-4 text-sm placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary outline-none transition-all" 
               placeholder="Twój adres email" 
               type="email" 
             />

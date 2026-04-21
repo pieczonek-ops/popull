@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @import "react-quill-new/dist/quill.snow.css";
 
 @theme {
-  --font-headline: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
   
   --color-surface: var(--surface);
@@ -15,31 +15,34 @@
   --color-on-primary: var(--on-primary);
   --color-primary-container: var(--primary-container);
   --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
 }
 
 @layer base {
   :root {
-    --surface: #fdfcff;
-    --on-surface: #1a1c1e;
-    --surface-container: #f0f0f3;
-    --surface-container-low: #f8f9fc;
+    --surface: #ffffff;
+    --on-surface: #0f172a; /* Slate 900 */
+    --surface-container: #f1f5f9; /* Slate 100 */
+    --surface-container-low: #f8fafc; /* Slate 50 */
     --surface-container-lowest: #ffffff;
-    --primary: #0061a4;
+    --primary: #0891b2; /* Cyan 600 */
     --on-primary: #ffffff;
-    --primary-container: #d1e4ff;
-    --on-surface-variant: #43474e;
+    --primary-container: #cffafe; /* Cyan 100 */
+    --on-surface-variant: #64748b; /* Slate 500 */
+    --outline: #e2e8f0; /* Slate 200 */
   }
 
   :root.dark {
-    --surface: #111416;
-    --on-surface: #e1e2e6;
-    --surface-container: #1d2023;
-    --surface-container-low: #191c1f;
-    --surface-container-lowest: #0b0f11;
-    --primary: #c0c1ff;
-    --on-primary: #1f2182;
-    --primary-container: #040071;
-    --on-surface-variant: #c7c5d4;
+    --surface: #020617; /* Slate 950 */
+    --on-surface: #f1f5f9; /* Slate 100 */
+    --surface-container: #1e293b; /* Slate 800 */
+    --surface-container-low: #0f172a; /* Slate 900 */
+    --surface-container-lowest: #020617;
+    --primary: #22d3ee; /* Cyan 400 */
+    --on-primary: #083344; /* Cyan 950 */
+    --primary-container: #164e63; /* Cyan 900 */
+    --on-surface-variant: #94a3b8; /* Slate 400 */
+    --outline: #334155; /* Slate 700 */
   }
 
   body {

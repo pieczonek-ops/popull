@@ -99,7 +99,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
           </button>
 
           {isMultiPage && (
-            <div className="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full border border-white/5 scale-90 md:scale-100">
+            <div className="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full border border-outline scale-90 md:scale-100">
               <span className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                 <Layers className="w-3 h-3" /> Strona {activeStep + 1} z {totalSteps}
               </span>
@@ -205,7 +205,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
 
                 {/* Show all sub-sections if NOT in multi-page mode */}
                 {!isMultiPage && activeStep === 0 && article.subSections?.map((sub, idx) => (
-                  <div key={sub.id} className="pt-16 mt-16 border-t border-white/5 space-y-8">
+                  <div key={sub.id} className="pt-16 mt-16 border-t border-outline space-y-8">
                     <div className="flex items-center gap-4">
                       <span className="bg-primary text-on-primary w-8 h-8 rounded-full flex items-center justify-center font-black text-xs">{idx + 1}</span>
                       <h2 className="text-2xl lg:text-3xl font-black uppercase tracking-tight">{sub.title}</h2>
@@ -234,7 +234,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
 
             {/* Navigation for Multi-page */}
             {isMultiPage && (
-              <div className="flex justify-between items-center mt-12 py-8 border-y border-white/5">
+              <div className="flex justify-between items-center mt-12 py-8 border-y border-outline">
                 <button 
                   onClick={() => {
                     setActiveStep(s => Math.max(0, s-1));
@@ -271,7 +271,7 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
             )}
             
             {/* Actions */}
-            <div className="flex gap-4 mt-12 py-6 border-y border-white/5">
+            <div className="flex gap-4 mt-12 py-6 border-y border-outline">
               <button 
                 onClick={handleShare}
                 className="flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all"

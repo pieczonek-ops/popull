@@ -2,7 +2,7 @@ import { Globe, Share2 } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-surface-container-lowest w-full border-t border-white/5 flex flex-col items-center gap-6 py-12 mt-20">
+    <footer className="bg-surface-container-lowest w-full border-t border-outline flex flex-col items-center gap-6 py-12 mt-20">
       <div className="max-w-screen-2xl w-full px-6 flex flex-col md:flex-row justify-between items-center gap-8">
         <span className="text-lg font-bold text-on-surface uppercase tracking-widest italic">The Editorial Pulse</span>
         <nav className="flex flex-wrap justify-center gap-8">

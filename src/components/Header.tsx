@@ -7,7 +7,7 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-white/5">
+    <header className="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl border-b border-outline">
       <div className="flex justify-between items-center px-6 py-4 w-full max-w-screen-2xl mx-auto">
         <div className="flex items-center gap-4 lg:gap-8">
           <span className="text-2xl font-black italic tracking-tighter text-primary uppercase">The Pulse</span>

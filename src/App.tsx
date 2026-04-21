@@ -89,7 +89,7 @@ function MainContent() {
                     return (
                       <div 
                         key={section.id} 
-                        className={`p-8 rounded-3xl border border-white/5 relative overflow-hidden ${section.backgroundColor || section.backgroundImageUrl ? '' : 'bg-surface-container-low/50'}`} 
+                        className={`p-8 rounded-3xl border border-outline relative overflow-hidden ${section.backgroundColor || section.backgroundImageUrl ? '' : 'bg-surface-container-low/50'}`} 
                         style={{ 
                           backgroundColor: section.backgroundColor,
                           backgroundImage: section.backgroundImageUrl ? `url(${section.backgroundImageUrl})` : undefined,
