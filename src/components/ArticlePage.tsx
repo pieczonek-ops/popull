@@ -192,13 +192,13 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                 {/* Main Content or Sub-section Content */}
                 {activeStep === 0 ? (
                   <div 
-                    className="prose prose-invert max-w-none"
+                    className="prose max-w-none"
                     dangerouslySetInnerHTML={{ __html: article.content || article.description }} 
                   />
                 ) : (
                   <div className="space-y-8">
                     <div 
-                      className="prose prose-invert max-w-none"
+                      className="prose max-w-none"
                       dangerouslySetInnerHTML={{ __html: article.subSections![activeStep-1].content }} 
                     />
                   </div>
@@ -225,11 +225,12 @@ export default function ArticlePage({ article, config, onBack }: ArticlePageProp
                       </div>
                     )}
                     <div 
-                      className="prose prose-invert max-w-none text-on-surface/80"
+                      className="prose max-w-none text-on-surface/80"
                       dangerouslySetInnerHTML={{ __html: sub.content }} 
                     />
                   </div>
                 ))}
+
               </motion.div>
             </AnimatePresence>
 

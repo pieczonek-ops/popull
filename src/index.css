@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "react-quill-new/dist/quill.snow.css";
 
 @theme {
@@ -48,6 +49,68 @@
   body {
     @apply bg-surface text-on-surface font-body transition-colors duration-300;
   }
+}
+
+/* Typography Enhancements for Article Content */
+.prose {
+  @apply text-on-surface/90 leading-relaxed max-w-none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  @apply font-black text-on-surface uppercase tracking-tight mb-4 mt-8;
+}
+
+.prose h1 { @apply text-3xl lg:text-4xl; }
+.prose h2 { @apply text-2xl lg:text-3xl; }
+.prose h3 { @apply text-xl lg:text-2xl; }
+
+.prose p {
+  @apply mb-6;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-primary bg-surface-container py-4 px-8 rounded-r-2xl italic font-medium my-10 text-on-surface-variant;
+}
+
+.prose strong {
+  @apply font-bold text-on-surface;
+}
+
+.prose em {
+  @apply italic;
+}
+
+.prose u {
+  @apply underline;
+}
+
+.prose s {
+  @apply line-through;
+}
+
+.prose ul {
+  @apply list-disc pl-6 mb-6 space-y-2;
+}
+
+.prose ol {
+  @apply list-decimal pl-6 mb-6 space-y-2;
+}
+
+.prose a {
+  @apply text-primary font-bold hover:underline;
+}
+
+/* Quill Classes Support */
+.prose .ql-align-center {
+  @apply text-center;
+}
+
+.prose .ql-align-right {
+  @apply text-right;
+}
+
+.prose .ql-align-justify {
+  @apply text-justify;
 }
 
 /* Quill Dark Mode Overrides */
