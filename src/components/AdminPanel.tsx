@@ -350,8 +350,20 @@ export default function AdminPanel() {
                 <Settings className="w-6 h-6 text-primary" />
                 <h2 className="text-xl font-bold uppercase tracking-tight">Konfiguracja Sekcji Hero</h2>
               </div>
+
+              <div className="mb-8">
+                <label className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 cursor-pointer hover:bg-primary/20 transition-all w-fit">
+                  <input 
+                    type="checkbox" 
+                    className="w-6 h-6 rounded border-primary bg-surface-container text-primary focus:ring-primary"
+                    checked={homeConfig?.hero.enabled !== false}
+                    onChange={e => setHomeConfig(prev => prev ? {...prev, hero: {...prev.hero, enabled: e.target.checked}} : null)}
+                  />
+                  <span className="font-black uppercase tracking-widest text-primary">Włącz sekcję Hero na stronie głównej</span>
+                </label>
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${homeConfig?.hero.enabled === false ? 'opacity-30 pointer-events-none' : ''}`}>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Artykuł w Hero</label>
                   <select 

@@ -37,7 +37,9 @@ function HomeView({ allArticles, homeConfig }: { allArticles: NewsArticle[], hom
 
   return (
     <div className="space-y-10">
-      <Hero article={heroArticle} config={homeConfig?.hero} />
+      {homeConfig?.hero.enabled !== false && (
+        <Hero article={heroArticle} config={homeConfig?.hero} />
+      )}
       
       {homeConfig?.sections && homeConfig.sections.length > 0 ? (
         homeConfig.sections.map((section) => {

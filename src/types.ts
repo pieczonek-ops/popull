@@ -50,6 +50,7 @@ export interface CommentsConfig {
 
 export interface HomeConfig {
   hero: {
+    enabled?: boolean;
     articleId?: string;
     backgroundColor?: string;
     textColor?: string;
