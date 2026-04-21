@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill-new';
 import { collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot, query, orderBy, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { NewsArticle, HomeConfig, HomeSection, CommentsConfig } from '../types';
+import { NewsArticle, HomeConfig, HomeSection, CommentsConfig, ArticleSubSection } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../lib/dateUtils';
 import { Plus, Edit2, Trash2, X, Save, LayoutDashboard, LogOut, Settings, Home, Layers, MoveUp, MoveDown, MessageCircle } from 'lucide-react';
@@ -97,6 +97,45 @@ export default function AdminPanel() {
     if (window.confirm('Czy na pewno chcesz usunąć ten artykuł?')) {
       await deleteDoc(doc(db, 'articles', id));
     }
+  };
+
+  const addSubSection = () => {
+    if (!currentArticle) return;
+    const newSub: ArticleSubSection = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: '',
+      imageUrl: '',
+      content: ''
+    };
+    setCurrentArticle(prev => ({
+      ...prev,
+      subSections: [...(prev?.subSections || []), newSub]
+    }));
+  };
+
+  const removeSubSection = (id: string) => {
+    if (!currentArticle) return;
+    setCurrentArticle(prev => ({
+      ...prev,
+      subSections: prev?.subSections?.filter(s => s.id !== id)
+    }));
+  };
+
+  const updateSubSection = (id: string, field: keyof ArticleSubSection, value: string) => {
+    if (!currentArticle) return;
+    setCurrentArticle(prev => ({
+      ...prev,
+      subSections: prev?.subSections?.map(s => s.id === id ? { ...s, [field]: value } : s)
+    }));
+  };
+
+  const moveSubSection = (index: number, direction: 'up' | 'down') => {
+    if (!currentArticle || !currentArticle.subSections) return;
+    const newSubs = [...currentArticle.subSections];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= newSubs.length) return;
+    [newSubs[index], newSubs[targetIndex]] = [newSubs[targetIndex], newSubs[index]];
+    setCurrentArticle({ ...currentArticle, subSections: newSubs });
   };
 
   const handleSaveHomeConfig = async () => {
@@ -751,16 +790,100 @@ export default function AdminPanel() {
                   />
                 </div>
 
-                <div className="flex items-center gap-4 pt-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="w-5 h-5 rounded border-white/10 bg-surface-container-low text-primary focus:ring-primary"
-                      checked={currentArticle?.isBreaking || false}
-                      onChange={e => setCurrentArticle({...currentArticle, isBreaking: e.target.checked})}
-                    />
-                    <span className="text-sm font-bold uppercase tracking-widest">Breaking News</span>
-                  </label>
+                <div className="flex items-center gap-8 pt-4 pb-4 border-y border-white/5">
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 rounded border-white/10 bg-surface-container-low text-primary focus:ring-primary"
+                        checked={currentArticle?.isBreaking || false}
+                        onChange={e => setCurrentArticle({...currentArticle, isBreaking: e.target.checked})}
+                      />
+                      <span className="text-sm font-bold uppercase tracking-widest">Breaking News</span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center gap-4 border-l border-white/10 pl-8">
+                    <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Tryb wyświetlania</label>
+                    <select 
+                      className="bg-surface-container-low border border-white/10 rounded-full py-1 px-4 text-xs font-bold uppercase tracking-widest outline-none focus:ring-1 focus:ring-primary"
+                      value={currentArticle?.displayMode || 'single'}
+                      onChange={e => setCurrentArticle({...currentArticle, displayMode: e.target.value as any})}
+                    >
+                      <option value="single">Jedna Strona</option>
+                      <option value="multi">Stronicowanie (Galeia/Multi)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Sub-sections Management */}
+                <div className="space-y-6 pt-4">
+                  <div className="flex justify-between items-center bg-surface-container-low/50 p-4 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-2 text-primary">
+                      <Layers className="w-5 h-5" />
+                      <h3 className="font-bold uppercase tracking-tight text-sm">Sekcje artykułu / Galeria</h3>
+                    </div>
+                    <button 
+                      onClick={addSubSection}
+                      className="bg-primary/20 text-primary px-4 py-2 rounded-full font-bold text-xs flex items-center gap-2 hover:bg-primary hover:text-on-primary transition-all"
+                    >
+                      <Plus className="w-4 h-4" /> Dodaj sekcję
+                    </button>
+                  </div>
+
+                  <div className="space-y-8 pl-4 border-l-2 border-white/5">
+                    {currentArticle?.subSections?.map((sub, index) => (
+                      <div key={sub.id} className="relative bg-surface-container-low/30 p-6 rounded-2xl border border-white/5 space-y-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Sekcja #{index + 1}</span>
+                          <div className="flex gap-1">
+                            <button onClick={() => moveSubSection(index, 'up')} className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors"><MoveUp className="w-4 h-4" /></button>
+                            <button onClick={() => moveSubSection(index, 'down')} className="p-1.5 hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors"><MoveDown className="w-4 h-4" /></button>
+                            <button 
+                              onClick={() => removeSubSection(sub.id)}
+                              className="p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors ml-2"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Tytuł Sekcji</label>
+                            <input 
+                              placeholder="Np. Opis zdjęcia lub podtytuł"
+                              className="w-full bg-surface-container-low border border-white/10 rounded-xl py-2 px-4 text-sm outline-none focus:ring-1 focus:ring-primary"
+                              value={sub.title}
+                              onChange={e => updateSubSection(sub.id, 'title', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">URL Obrazu Sekcji</label>
+                            <input 
+                              placeholder="https://..."
+                              className="w-full bg-surface-container-low border border-white/10 rounded-xl py-2 px-4 text-sm outline-none focus:ring-1 focus:ring-primary"
+                              value={sub.imageUrl}
+                              onChange={e => updateSubSection(sub.id, 'imageUrl', e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Treść Sekcji (Edytor Wizualny)</label>
+                          <ReactQuill 
+                            theme="snow" 
+                            className="bg-surface-container-low"
+                            value={sub.content} 
+                            onChange={v => updateSubSection(sub.id, 'content', v)}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    {(!currentArticle?.subSections || currentArticle.subSections.length === 0) && (
+                      <p className="text-xs text-on-surface-variant italic pl-2">Brak dodatkowych sekcji. Artykuł będzie wyświetlany standardowo.</p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex gap-4 pt-8">

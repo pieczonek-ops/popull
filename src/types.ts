@@ -1,3 +1,10 @@
+export interface ArticleSubSection {
+  id: string;
+  title: string;
+  imageUrl: string;
+  content: string;
+}
+
 export interface NewsArticle {
   id: string;
   title: string;
@@ -8,6 +15,8 @@ export interface NewsArticle {
   timestamp: string;
   readTime: string;
   isBreaking?: boolean;
+  subSections?: ArticleSubSection[];
+  displayMode?: 'single' | 'multi';
 }
 
 export interface HomeSection {
