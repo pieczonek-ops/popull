@@ -51,7 +51,7 @@
   }
 
   a:not(.no-underline) {
-    @apply underline decoration-1 underline-offset-4;
+    @apply no-underline hover:underline decoration-1 underline-offset-4;
   }
 }
 
@@ -101,7 +101,7 @@
 }
 
 .prose a {
-  @apply text-primary font-bold underline decoration-2 underline-offset-4 hover:opacity-80 transition-opacity;
+  @apply text-primary font-bold no-underline hover:underline decoration-2 underline-offset-4 hover:opacity-80 transition-all;
 }
 
 /* Video & Iframe Responsiveness in Article Content */
